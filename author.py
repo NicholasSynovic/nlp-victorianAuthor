@@ -4,8 +4,9 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 
+#Dataset available at https://archive.ics.uci.edu/ml/machine-learning-databases/00454/
 trainData = pd.read_csv('DataSets/Gungor_2018_VictorianAuthorAttribution_data-train.csv',sep = ',',  encoding ='latin1')
-print(trainData)
+
 '''
 #use label encoder to assign numerical codes to the authors
 LE = LabelEncoder()       
@@ -24,9 +25,11 @@ for i, j in zip(train_Y, trainData['author']):
 count_vect = CountVectorizer()
 X_train_counts = count_vect.fit_transform(trainData['text'])
 
+#Vector based on frequency, not needed for TF-IDF vector
 tf_transformer = TfidfTransformer(use_idf=False).fit(X_train_counts)
 X_train_tf = tf_transformer.transform(X_train_counts)
 
+#Vector based on TF-IDF
 tfidf_transformer = TfidfTransformer()
 X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 
