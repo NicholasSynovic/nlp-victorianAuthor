@@ -1,6 +1,6 @@
 Victorian Era Author Recommender
 
- - Classifier that accepts a novel or passage and returns a suggested author from the Victoria era
+ - Classifier that accepts a novel or passage and returns a suggested author from the Victorian era
  - Utilizes Scikit-Learn library for text classification and pandas library for data formatting
 
 
