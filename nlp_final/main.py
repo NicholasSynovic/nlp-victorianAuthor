@@ -9,7 +9,7 @@ def main() -> None:
 
     match userArgs.mode:
         case "train":
-            train.main()
+            train.main(args=userArgs)
         case "test":
             pass
 

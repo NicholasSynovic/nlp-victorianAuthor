@@ -31,4 +31,18 @@ def getArgs() -> Namespace:
         help="Model folder to store/ read models from",
     )
 
+    parser.add_argument(
+        "--training-dataset",
+        type=Path,
+        required=True,
+        help="Training dataset to use",
+    )
+
+    # parser.add_argument(
+    #     "--testing-dataset",
+    #     type=Path,
+    #     required=False,
+    #     help="Training dataset to use",
+    # )
+
     return parser.parse_args()
