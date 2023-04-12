@@ -2,6 +2,7 @@ from argparse import Namespace
 from itertools import combinations
 from typing import Any, List, Tuple
 
+from joblib import dump
 from numpy import ndarray
 from pandas import DataFrame
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -14,17 +15,23 @@ from nlp_final.data import dataHandler
 
 def main(args: Namespace) -> None:
     df: DataFrame = dataHandler.loadData(path=args.training_dataset)
+    data: List[DataFrame] = dataHandler.splitData(df)
 
-    dfData: list = dataHandler.splitData(df)
+    x: ndarray = data[0]["text"].to_numpy()
+    y: ndarray = data[0]["author"].to_numpy()
 
-    trainMultinomialNaiveBayes(trainingData=dfData[0])
+    validationX: ndarray = data[1]["text"].to_numpy()
+    validationY: ndarray = data[1]["author"].to_numpy()
+
+    trainMultinomialNaiveBayes(
+        x=x, y=y, validationX=validationX, validationY=validationY
+    )
 
 
-def trainMultinomialNaiveBayes(trainingData: DataFrame) -> None:
+def trainMultinomialNaiveBayes(
+    x: ndarray, y: ndarray, validationX: ndarray, validationY: ndarray
+) -> None:
     ngramRanges: List[Tuple[int, int]] = list(combinations(iterable=range(1, 11), r=2))
-
-    x: ndarray = trainingData["text"].to_numpy()
-    y: ndarray = trainingData["author"].to_numpy()
 
     parameters: dict[str, List[Any]] = {
         "tfidfvectorizer__analyzer": ["word", "char"],
@@ -36,12 +43,19 @@ def trainMultinomialNaiveBayes(trainingData: DataFrame) -> None:
         "tfidfvectorizer__smooth_idf": [True, False],
         "tfidfvectorizer__stop_words": ["english", None],
         "tfidfvectorizer__strip_accents": ["ascii", "unicode", None],
-        "multinomialnb__alpha": [1.0, 0],
+        "multinomialnb__alpha": [1.0, 0, 0.5, 1.5, 2.0, 0.1],
         "multinomialnb__fit_prior": [True, False],
         "multinomialnb__force_alpha": [True, False],
     }
 
     pipeline: Pipeline = make_pipeline(TfidfVectorizer(), MultinomialNB())
+
     gsvc: GridSearchCV = GridSearchCV(estimator=pipeline, param_grid=parameters)
 
     gsvc.fit(X=x, y=y)
+
+    model: Pipeline = gsvc.best_estimator_
+    score: float = model.score(X=validationX, y=validationY)
+
+    print(f"Best model score: {score}")
+    dump(value=model, filename="multinomialNB.joblib")
