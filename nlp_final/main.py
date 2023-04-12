@@ -1,14 +1,15 @@
 from argparse import Namespace
 
-from args.args import getArgs
+from nlp_final.args import args
+from nlp_final.train import train
 
 
 def main() -> None:
-    args: Namespace = getArgs()
+    userArgs: Namespace = args.getArgs()
 
-    match args.mode:
+    match userArgs.mode:
         case "train":
-            pass
+            train.main()
         case "test":
             pass
 

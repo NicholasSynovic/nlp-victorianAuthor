@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Giorgio Montenegro <gmontenegro@luc.edu>", "Nicholas M. Synovic <nicholas.synovic@gmail.com>", "Nelson Stefan <snelson9@luc.edu>"]
 readme = "README.md"
-packages = [{include = "nlp_victorianauthor"}]
+packages = [{include = "nlp_final"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
