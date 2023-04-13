@@ -5,7 +5,7 @@ from numpy import ndarray
 from pandas import DataFrame
 
 from nlp_final.data import dataHandler
-from nlp_final.train import vectorizer
+from nlp_final.train import classifier, vectorizer
 
 
 def main(args: Namespace) -> None:
@@ -22,4 +22,4 @@ def main(args: Namespace) -> None:
         case "vectorizer":
             vectorizer.main(args=args, x=x)
         case "classifier":
-            pass
+            classifier.main()

@@ -94,6 +94,45 @@ def getArgs() -> Namespace:
         help="Training dataset to use",
     )
 
+    classifier: ArgumentParser = trainingSubparsers.add_parser(
+        name="classifier",
+        help="Set the program to train different types of classifiers",
+        formatter_class=AlphabeticalOrderHelpFormatter,
+    )
+
+    vectorizer.add_argument(
+        "--naive-bayes",
+        action="store_true",
+        help="Train a naive bayes classifier",
+        dest="classifierTrainNB",
+    )
+
+    classifier.add_argument(
+        "--vectorizer",
+        type=Path,
+        required=True,
+        help="Vectorizer model to use",
+        dest="classifierVectorizer",
+    )
+
+    classifier.add_argument(
+        "--vectorizer-type",
+        nargs=1,
+        default="tf-idf",
+        type=str,
+        choices=["tf-idf", "word2vec", "fasttext"],
+        required=True,
+        help="Vectorizer model to use",
+        dest="classifierVectorizerType",
+    )
+
+    classifier.add_argument(
+        "--training-dataset",
+        type=Path,
+        required=True,
+        help="Training dataset to use",
+    )
+
     infrenceMode: ArgumentParser = subparsers.add_parser(
         name="infrence",
         help="Set the program to to run in infrence training mode",
