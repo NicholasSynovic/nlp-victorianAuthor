@@ -24,7 +24,6 @@ def getArgs() -> Namespace:
     subparsers: _SubParsersAction = parser.add_subparsers(
         title="Operation Mode",
         description="Options to run the program in model training or model infrence mode",
-        dest="mode",
         required=True,
     )
 
@@ -34,113 +33,36 @@ def getArgs() -> Namespace:
         formatter_class=AlphabeticalOrderHelpFormatter,
     )
 
-    trainingSubparsers: _SubParsersAction = trainingMode.add_subparsers(
-        title="Model Type Training",
-        description="Options to specify what type of model to train",
-        dest="modelType",
-        required=True,
-    )
-
-    vectorizer: ArgumentParser = trainingSubparsers.add_parser(
-        name="vectorizer",
-        help="Set the program to train different types of vectorizers",
-        formatter_class=AlphabeticalOrderHelpFormatter,
-    )
-
-    vectorizer.add_argument(
-        "--tf-idf",
-        action="store_true",
-        help="Train a TF-IDF vectorizer",
-        dest="vectorizerTrainTFIDF",
-    )
-
-    vectorizer.add_argument(
-        "--word2vec",
-        action="store_true",
-        help="Train a Word2Vec vectorizer",
-        dest="vectorizerTrainWord2Vec",
-    )
-
-    vectorizer.add_argument(
-        "--fasttext",
-        action="store_true",
-        help="Train a FastText vectorizer",
-        dest="vectorizerTrainFastText",
-    )
-
-    vectorizer.add_argument(
-        "-j",
-        "--jobs",
-        default=1,
-        type=int,
-        help="Number of training jobs to run in parallel (default: 1)",
-        dest="vectorizerJobs",
-    )
-
-    vectorizer.add_argument(
-        "-o",
-        "--output",
-        default=Path("model"),
-        type=Path,
-        required=False,
-        help="Directory to save the vectorizers to (default: ./model/)",
-        dest="vectorizerOutput",
-    )
-
-    vectorizer.add_argument(
+    trainingMode.add_argument(
         "--training-dataset",
         type=Path,
         required=True,
         help="Training dataset to use",
     )
 
-    classifier: ArgumentParser = trainingSubparsers.add_parser(
-        name="classifier",
-        help="Set the program to train different types of classifiers",
-        formatter_class=AlphabeticalOrderHelpFormatter,
-    )
-
-    classifier.add_argument(
+    trainingMode.add_argument(
         "--naive-bayes",
         action="store_true",
         help="Train a naive bayes classifier",
-        dest="classifierTrainNB",
     )
 
-    classifier.add_argument(
+    trainingMode.add_argument(
         "--vectorizer",
-        type=Path,
-        required=True,
-        help="Vectorizer model to use",
-        dest="classifierVectorizer",
-    )
-
-    classifier.add_argument(
-        "--vectorizer-type",
         nargs=1,
         default="tf-idf",
         type=str,
         choices=["tf-idf", "word2vec", "fasttext"],
         required=True,
         help="Vectorizer model to use",
-        dest="classifierVectorizerType",
     )
 
-    classifier.add_argument(
-        "--training-dataset",
-        type=Path,
-        required=True,
-        help="Training dataset to use",
-    )
-
-    classifier.add_argument(
+    trainingMode.add_argument(
         "-o",
         "--output",
         default=Path("model"),
         type=Path,
         required=False,
-        help="Directory to save the classifiers to (default: ./model/)",
-        dest="classifierOutput",
+        help="Directory to save the classifiers to",
     )
 
     infrenceMode: ArgumentParser = subparsers.add_parser(
