@@ -26,6 +26,43 @@ def getArgs() -> Namespace:
         formatter_class=AlphabeticalOrderHelpFormatter,
     )
 
+    trainingSubparsers: _SubParsersAction = trainingMode.add_subparsers(
+        title="Model Type Training",
+        description="Options to specify what type of model to train",
+        dest="modelType",
+        required=True,
+    )
+
+    vectorizer: ArgumentParser = trainingSubparsers.add_parser(
+        name="vectorizer",
+        help="Set the program to train different types of vectorizers",
+        formatter_class=AlphabeticalOrderHelpFormatter,
+    )
+
+    vectorizer.add_argument(
+        "--tf-idf",
+        action="store_true",
+        help="Train a TF-IDF vectorizers",
+        dest="vectorizerTrainTFIDF",
+    )
+    vectorizer.add_argument(
+        "-j",
+        "--jobs",
+        default=1,
+        type=int,
+        help="Number of training jobs to run in parallel (default: 1)",
+        dest="vectorizerJobs",
+    )
+    vectorizer.add_argument(
+        "-o",
+        "--output",
+        default=Path("model"),
+        type=Path,
+        required=False,
+        help="Directory to save the vectorizers to (default: ./model/)",
+        dest="vectorizerOutput",
+    )
+
     trainingMode.add_argument(
         "-o",
         "--output",
@@ -38,6 +75,13 @@ def getArgs() -> Namespace:
     trainingMode.add_argument(
         "--training-dataset",
         type=Path,
+        required=True,
+        help="Training dataset to use",
+    )
+
+    trainingMode.add_argument(
+        "--vectorizer",
+        type=str,
         required=True,
         help="Training dataset to use",
     )

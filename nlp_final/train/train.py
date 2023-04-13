@@ -13,6 +13,7 @@ from sklearn.svm import SVC
 from sklearnex import patch_sklearn
 
 from nlp_final.data import dataHandler
+from nlp_final.train import vectorizer
 
 patch_sklearn()
 
@@ -27,37 +28,8 @@ def main(args: Namespace) -> None:
     validationX: ndarray = data[1]["text"].to_numpy()
     validationY: ndarray = data[1]["author"].to_numpy()
 
-    trainMultinomialNaiveBayes(
-        x=x,
-        y=y,
-        validationX=validationX,
-        validationY=validationY,
-        outputPath=args.output,
-    )
-
-
-def trainMultinomialNaiveBayes(
-    x: ndarray, y: ndarray, validationX: ndarray, validationY: ndarray, outputPath: Path
-) -> None:
-    parameters: dict[str, List[Any]] = {
-        "tfidfvectorizer__decode_error": ["ignore"],
-        "tfidfvectorizer__lowercase": [False, True],
-        "tfidfvectorizer__ngram_range": [(1, 3)],
-        "tfidfvectorizer__norm": ["l1", "l2"],
-        "multinomialnb__alpha": [1.0, 0.5, 1.5],
-        "multinomialnb__force_alpha": [True],
-    }
-
-    pipeline: Pipeline = make_pipeline(TfidfVectorizer(), MultinomialNB())
-
-    gsvc: GridSearchCV = GridSearchCV(
-        estimator=pipeline, param_grid=parameters, n_jobs=1
-    )
-
-    gsvc.fit(X=x, y=y)
-
-    model: Pipeline = gsvc.best_estimator_
-    score: float = model.score(X=validationX, y=validationY)
-
-    print(f"Best model score: {score}")
-    dump(value=model, filename=Path(outputPath, "multinomialNB.joblib"))
+    match args.modelType:
+        case "vectorizer":
+            vectorizer.main(args=args)
+        case "classifier":
+            pass
