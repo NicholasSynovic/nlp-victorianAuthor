@@ -20,7 +20,7 @@ def main() -> None:
                 pass
 
             train.main(args=userArgs)
-        case "test":
+        case "infrence":
             pass
 
 
