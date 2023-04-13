@@ -7,20 +7,6 @@ from numpy import ndarray
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-def main(
-    args: Namespace,
-    x: ndarray,
-) -> None:
-    if args.vectorizerTrainTFIDF:
-        trainTFIDF(x=x, outputPath=args.vectorizerOutput)
-
-    if args.vectorizerTrainWord2Vec:
-        trainWord2Vec(x=x, outputPath=args.vectorizerOutput)
-
-    if args.vectorizerTrainFastText:
-        trainFastText(x=x, outputPath=args.vectorizerOutput)
-
-
 def trainTFIDF(x: ndarray, outputPath: Path) -> None:
     tfidf: TfidfVectorizer = TfidfVectorizer(
         decode_error="ignore", lowercase=False, ngram_range=(1, 3), norm="l2"

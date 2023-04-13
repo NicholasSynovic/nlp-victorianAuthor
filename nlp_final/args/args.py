@@ -59,7 +59,7 @@ def getArgs() -> Namespace:
     trainingMode.add_argument(
         "-o",
         "--output",
-        default=Path("model"),
+        default=Path("../model"),
         type=Path,
         required=False,
         help="Directory to save the classifiers to",
