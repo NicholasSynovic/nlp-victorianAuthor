@@ -1,12 +1,10 @@
 from argparse import Namespace
 from pathlib import Path
-from typing import Any, List
 
 from gensim.models import FastText, Word2Vec
 from joblib import dump
 from numpy import ndarray
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import GridSearchCV
 
 
 def main(
@@ -15,9 +13,7 @@ def main(
     y: ndarray,
 ) -> None:
     if args.vectorizerTrainTFIDF:
-        trainTFIDF(
-            x=x, y=y, numberOfJobs=args.vectorizerJobs, outputPath=args.vectorizerOutput
-        )
+        trainTFIDF(x=x, outputPath=args.vectorizerOutput)
 
     if args.vectorizerTrainWord2Vec:
         trainWord2Vec(x=x, outputPath=args.vectorizerOutput)
@@ -26,22 +22,14 @@ def main(
         trainFastText(x=x, outputPath=args.vectorizerOutput)
 
 
-def trainTFIDF(x: ndarray, y: ndarray, numberOfJobs: int, outputPath: Path) -> None:
-    parameters: dict[str, List[Any]] = {
-        "tfidfvectorizer__decode_error": ["ignore"],
-        "tfidfvectorizer__lowercase": [False, True],
-        "tfidfvectorizer__ngram_range": [(1, 3)],
-        "tfidfvectorizer__norm": ["l1", "l2"],
-    }
-
-    gscv: GridSearchCV = GridSearchCV(
-        estimator=TfidfVectorizer(), param_grid=parameters, n_jobs=numberOfJobs
+def trainTFIDF(x: ndarray, outputPath: Path) -> None:
+    tfidf: TfidfVectorizer = TfidfVectorizer(
+        decode_error="ignore", lowercase=False, ngram_range=(1, 3), norm="l2"
     )
 
     print("Training TF-IDF vectorizer...")
-    gscv.fit(X=x, y=y)
-    model: TfidfVectorizer = gscv.best_estimator_
-    dump(value=model, filename=Path(outputPath, "tfidf.joblib"))
+    tfidf.fit(raw_documents=x)
+    dump(value=tfidf, filename=Path(outputPath, "tfidf.joblib"))
 
 
 def trainWord2Vec(x: ndarray, outputPath: Path) -> None:

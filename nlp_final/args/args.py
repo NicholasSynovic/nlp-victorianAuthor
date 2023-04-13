@@ -94,15 +94,6 @@ def getArgs() -> Namespace:
         help="Training dataset to use",
     )
 
-    # trainingMode.add_argument(
-    #     "-o",
-    #     "--output",
-    #     default=Path("model"),
-    #     type=Path,
-    #     required=False,
-    #     help="Directory to save models to",
-    # )
-
     infrenceMode: ArgumentParser = subparsers.add_parser(
         name="infrence",
         help="Set the program to to run in infrence training mode",
