@@ -63,6 +63,7 @@ def getArgs() -> Namespace:
         type=Path,
         required=False,
         help="Directory to save the classifiers to",
+        dest="trainingOutput",
     )
 
     infrenceMode: ArgumentParser = subparsers.add_parser(

@@ -7,19 +7,6 @@ from nlp_final.args import args
 from nlp_final.train import train
 
 
-def makeDir(args: Namespace) -> None:
-    try:
-        try:
-            mkdir(path=args.vectorizerOutput)
-        except FileExistsError:
-            pass
-    except AttributeError:
-        try:
-            mkdir(path=args.classifierOutput)
-        except FileExistsError:
-            pass
-
-
 def main() -> None:
     userArgs: Namespace = args.getArgs()
 
@@ -27,7 +14,10 @@ def main() -> None:
 
     match userArgs.mode:
         case "train":
-            makeDir(args=userArgs)
+            try:
+                mkdir(path=userArgs.trainingOutput)
+            except FileExistsError:
+                pass
             train.main(args=userArgs)
         case "infrence":
             pass
