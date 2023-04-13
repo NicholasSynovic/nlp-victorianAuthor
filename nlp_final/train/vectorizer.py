@@ -15,11 +15,11 @@ def trainTFIDF(x: ndarray) -> TfidfVectorizer:
 
 def trainWord2Vec(x: ndarray) -> Word2Vec:
     print("Training Word2Vec vectorizer...")
-    w2v: Word2Vec = Word2Vec(sentences=x, vector_size=500)
+    w2v: Word2Vec = Word2Vec(sentences=x, vector_size=500, seed=42)
     return w2v
 
 
 def trainFastText(x: ndarray) -> FastText:
     print("Training FastText vectorizer...")
-    ft: FastText = FastText(sentences=x, vector_size=500)
+    ft: FastText = FastText(sentences=x, vector_size=500, seed=42)
     return ft
