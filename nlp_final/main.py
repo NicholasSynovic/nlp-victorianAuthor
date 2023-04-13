@@ -10,7 +10,11 @@ def main() -> None:
 
     match userArgs.mode:
         case "train":
-            mkdir(path=userArgs.output)
+            try:
+                mkdir(path=userArgs.output)
+            except FileExistsError:
+                pass
+
             train.main(args=userArgs)
         case "test":
             pass
