@@ -62,13 +62,6 @@ def getArgs() -> Namespace:
     )
 
     vectorizer.add_argument(
-        "--doc2vec",
-        action="store_true",
-        help="Train a Doc2Vec vectorizer",
-        dest="vectorizerTrainDoc2Vec",
-    )
-
-    vectorizer.add_argument(
         "--fasttext",
         action="store_true",
         help="Train a FastText vectorizer",
@@ -94,21 +87,21 @@ def getArgs() -> Namespace:
         dest="vectorizerOutput",
     )
 
-    trainingMode.add_argument(
-        "-o",
-        "--output",
-        default=Path("model"),
-        type=Path,
-        required=False,
-        help="Directory to save models to",
-    )
-
-    trainingMode.add_argument(
+    vectorizer.add_argument(
         "--training-dataset",
         type=Path,
         required=True,
         help="Training dataset to use",
     )
+
+    # trainingMode.add_argument(
+    #     "-o",
+    #     "--output",
+    #     default=Path("model"),
+    #     type=Path,
+    #     required=False,
+    #     help="Directory to save models to",
+    # )
 
     infrenceMode: ArgumentParser = subparsers.add_parser(
         name="infrence",

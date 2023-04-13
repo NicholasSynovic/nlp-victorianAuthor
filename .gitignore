@@ -162,3 +162,5 @@ cython_debug/
 *.zip
 dataset/*
 *.joblib
+*.gensim
+*.npy

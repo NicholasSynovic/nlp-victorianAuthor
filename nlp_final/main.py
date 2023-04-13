@@ -15,7 +15,7 @@ def main() -> None:
     match userArgs.mode:
         case "train":
             try:
-                mkdir(path=userArgs.output)
+                mkdir(path=userArgs.vectorizerOutput)
             except FileExistsError:
                 pass
 

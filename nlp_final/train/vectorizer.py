@@ -22,10 +22,7 @@ def main(
     if args.vectorizerTrainWord2Vec:
         trainWord2Vec(x=x, outputPath=args.vectorizerOutput)
 
-    if args.vectorizerTrainDoc2Vec:
-        trainWord2Vec(x=x, outputPath=args.vectorizerOutput)
-
-    if args.vectorizerTrainDoc2Vec:
+    if args.vectorizerTrainFastText:
         trainFastText(x=x, outputPath=args.vectorizerOutput)
 
 
@@ -53,13 +50,7 @@ def trainWord2Vec(x: ndarray, outputPath: Path) -> None:
     w2v.save(Path(outputPath, "word2vec.gensim").absolute().__str__())
 
 
-def trainDoc2Vec(x: ndarray, outputPath: Path) -> None:
-    print("Training Doc2Vec vectorizer...")
-    d2v: Doc2Vec = Doc2Vec(documents=x, vector_size=500)
-    d2v.save(Path(outputPath, "doc2vec.gensim").absolute().__str__())
-
-
 def trainFastText(x: ndarray, outputPath: Path) -> None:
     print("Training FastText vectorizer...")
-    ft: FastText = FastText(documents=x, vector_size=500)
+    ft: FastText = FastText(sentences=x, vector_size=500)
     ft.save(Path(outputPath, "fasttext.gensim").absolute().__str__())
