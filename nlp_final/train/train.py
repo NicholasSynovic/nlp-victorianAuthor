@@ -20,6 +20,6 @@ def main(args: Namespace) -> None:
 
     match args.modelType:
         case "vectorizer":
-            vectorizer.main(args=args, x=x, y=y)
+            vectorizer.main(args=args, x=x)
         case "classifier":
             pass

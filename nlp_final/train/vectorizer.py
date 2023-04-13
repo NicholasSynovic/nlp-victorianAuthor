@@ -10,7 +10,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 def main(
     args: Namespace,
     x: ndarray,
-    y: ndarray,
 ) -> None:
     if args.vectorizerTrainTFIDF:
         trainTFIDF(x=x, outputPath=args.vectorizerOutput)
