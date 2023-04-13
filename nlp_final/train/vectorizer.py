@@ -2,7 +2,7 @@ from argparse import Namespace
 from pathlib import Path
 from typing import Any, List
 
-from gensim.models import Doc2Vec, FastText, Word2Vec
+from gensim.models import FastText, Word2Vec
 from joblib import dump
 from numpy import ndarray
 from sklearn.feature_extraction.text import TfidfVectorizer
