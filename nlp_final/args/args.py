@@ -1,4 +1,4 @@
-from argparse import ArgumentParser, Namespace
+from argparse import ArgumentParser, Namespace, _SubParsersAction
 from pathlib import Path
 
 from . import AlphabeticalOrderHelpFormatter, authors
@@ -7,42 +7,45 @@ from . import AlphabeticalOrderHelpFormatter, authors
 def getArgs() -> Namespace:
     parser: ArgumentParser = ArgumentParser(
         prog="LUC COMP 429 (NLP) Final: Victorian Author Document Classifier",
-        usage="A program to train and test models meant to classify Victorian era documents.",
-        description=None,
+        usage=None,
+        description="A program to train and test models meant to classify Victorian era documents.",
         epilog=f"Authors: {', '.join(authors)}",
         formatter_class=AlphabeticalOrderHelpFormatter,
     )
 
-    parser.add_argument(
-        "--mode",
-        default="train",
-        type=str,
-        choices=["train", "test"],
-        required=False,
-        help="Either train models or test models",
+    subparsers: _SubParsersAction = parser.add_subparsers(
+        title="Operation Mode",
+        description="Options to run the program in model training or model infrence mode",
+        dest="mode",
+        required=True,
     )
 
-    parser.add_argument(
+    trainingMode: ArgumentParser = subparsers.add_parser(
+        name="train",
+        help="Set the program to to run in model training mode",
+        formatter_class=AlphabeticalOrderHelpFormatter,
+    )
+
+    trainingMode.add_argument(
         "-o",
         "--output",
         default=Path("model"),
         type=Path,
         required=False,
-        help="Model folder to store/ read models from",
+        help="Directory to save models to",
     )
 
-    parser.add_argument(
+    trainingMode.add_argument(
         "--training-dataset",
         type=Path,
         required=True,
         help="Training dataset to use",
     )
 
-    # parser.add_argument(
-    #     "--testing-dataset",
-    #     type=Path,
-    #     required=False,
-    #     help="Training dataset to use",
-    # )
+    infrenceMode: ArgumentParser = subparsers.add_parser(
+        name="infrence",
+        help="Set the program to to run in infrence training mode",
+        formatter_class=AlphabeticalOrderHelpFormatter,
+    )
 
     return parser.parse_args()
