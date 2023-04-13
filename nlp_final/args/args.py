@@ -1,7 +1,8 @@
 from argparse import ArgumentParser, Namespace, _SubParsersAction
+from importlib.metadata import version
 from pathlib import Path
 
-from . import AlphabeticalOrderHelpFormatter, authors
+from nlp_final.args import AlphabeticalOrderHelpFormatter, authors
 
 
 def getArgs() -> Namespace:
@@ -11,6 +12,13 @@ def getArgs() -> Namespace:
         description="A program to train and test models meant to classify Victorian era documents.",
         epilog=f"Authors: {', '.join(authors)}",
         formatter_class=AlphabeticalOrderHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=f"NLP Final: {version('nlp-final')}",
     )
 
     subparsers: _SubParsersAction = parser.add_subparsers(
@@ -75,13 +83,6 @@ def getArgs() -> Namespace:
     trainingMode.add_argument(
         "--training-dataset",
         type=Path,
-        required=True,
-        help="Training dataset to use",
-    )
-
-    trainingMode.add_argument(
-        "--vectorizer",
-        type=str,
         required=True,
         help="Training dataset to use",
     )
