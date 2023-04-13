@@ -66,10 +66,4 @@ def getArgs() -> Namespace:
         dest="trainingOutput",
     )
 
-    # infrenceMode: ArgumentParser = subparsers.add_parser(
-    #     name="infrence",
-    #     help="Set the program to to run in infrence training mode",
-    #     formatter_class=AlphabeticalOrderHelpFormatter,
-    # )
-
     return parser.parse_args()

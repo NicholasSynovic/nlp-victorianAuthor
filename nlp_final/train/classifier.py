@@ -11,33 +11,11 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline, make_pipeline
 
+from nlp_final.train.vectorizer import *
+
 
 def main(args: Namespace, x: DataFrame, y: DataFrame) -> None:
     print(args.classifierVectorizerType)
-    vectorizer: TfidfVectorizer | Word2Vec | FastText = loadVectorizer(
-        vectorizer=args.classifierVectorizer,
-        vectorizerType=args.classifierVectorizerType,
-    )
-
-    if args.classifierTrainNB:
-        trainMultinomialNaiveBayes(
-            x=x, y=y, outputPath=args.classifierOutput, vectorizer=vectorizer
-        )
-
-
-def loadVectorizer(
-    vectorizer: Path, vectorizerType: str
-) -> TfidfVectorizer | Word2Vec | FastText:
-    match vectorizerType:
-        case "tf-idf":
-            test = load(vectorizer)
-            print(type(test))
-            print("Test")
-            quit()
-        case "word2vec":
-            return Word2Vec.load(vectorizer)
-        case "fasttext":
-            return FastText.load(vectorizer)
 
 
 def trainMultinomialNaiveBayes(
