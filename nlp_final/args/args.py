@@ -50,9 +50,31 @@ def getArgs() -> Namespace:
     vectorizer.add_argument(
         "--tf-idf",
         action="store_true",
-        help="Train a TF-IDF vectorizers",
+        help="Train a TF-IDF vectorizer",
         dest="vectorizerTrainTFIDF",
     )
+
+    vectorizer.add_argument(
+        "--word2vec",
+        action="store_true",
+        help="Train a Word2Vec vectorizer",
+        dest="vectorizerTrainWord2Vec",
+    )
+
+    vectorizer.add_argument(
+        "--doc2vec",
+        action="store_true",
+        help="Train a Doc2Vec vectorizer",
+        dest="vectorizerTrainDoc2Vec",
+    )
+
+    vectorizer.add_argument(
+        "--fasttext",
+        action="store_true",
+        help="Train a FastText vectorizer",
+        dest="vectorizerTrainFastText",
+    )
+
     vectorizer.add_argument(
         "-j",
         "--jobs",
@@ -61,6 +83,7 @@ def getArgs() -> Namespace:
         help="Number of training jobs to run in parallel (default: 1)",
         dest="vectorizerJobs",
     )
+
     vectorizer.add_argument(
         "-o",
         "--output",
