@@ -24,15 +24,14 @@ def main(args: Namespace, x: DataFrame, y: DataFrame) -> None:
 def loadVectorizer(
     vectorizer: Path, vectorizerType: str
 ) -> TfidfVectorizer | Word2Vec | FastText:
-    vectorizer: TfidfVectorizer | Word2Vec | FastText
     match vectorizerType:
         case "tf-idf":
-            vectorizer = load(filename=vectorizer)
+            model: TfidfVectorizer = load(filename=vectorizer)
         case "word2vec":
-            vectorizer = Word2Vec.load(vectorizer)
+            model: Word2Vec = Word2Vec.load(vectorizer)
         case "fasttext":
-            vectorizer = FastText.load(vectorizer)
-    return vectorizer
+            model: FastText = FastText.load(vectorizer)
+    return model
 
 
 def trainMultinomialNaiveBayes(x: ndarray, y: ndarray, outputPath: Path) -> None:
