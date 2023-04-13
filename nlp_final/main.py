@@ -1,12 +1,16 @@
 from argparse import Namespace
 from os import mkdir
 
+from sklearnex import patch_sklearn
+
 from nlp_final.args import args
 from nlp_final.train import train
 
 
 def main() -> None:
     userArgs: Namespace = args.getArgs()
+
+    patch_sklearn()
 
     match userArgs.mode:
         case "train":
