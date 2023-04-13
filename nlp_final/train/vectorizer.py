@@ -6,9 +6,6 @@ from joblib import dump
 from numpy import ndarray
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import GridSearchCV
-from sklearnex import patch_sklearn
-
-patch_sklearn()
 
 
 def main(

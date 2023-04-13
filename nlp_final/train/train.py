@@ -10,12 +10,9 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.svm import SVC
-from sklearnex import patch_sklearn
 
 from nlp_final.data import dataHandler
 from nlp_final.train import vectorizer
-
-patch_sklearn()
 
 
 def main(args: Namespace) -> None:
