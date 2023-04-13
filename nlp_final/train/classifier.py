@@ -1,9 +1,9 @@
 from argparse import Namespace
 from pathlib import Path
+from pickle import load
 from typing import Any, List
 
 from gensim.models import FastText, Word2Vec
-from joblib import dump, load
 from numpy import ndarray
 from pandas import DataFrame
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -13,12 +13,16 @@ from sklearn.pipeline import Pipeline, make_pipeline
 
 
 def main(args: Namespace, x: DataFrame, y: DataFrame) -> None:
+    print(args.classifierVectorizerType)
     vectorizer: TfidfVectorizer | Word2Vec | FastText = loadVectorizer(
         vectorizer=args.classifierVectorizer,
         vectorizerType=args.classifierVectorizerType,
     )
 
-    pass
+    if args.classifierTrainNB:
+        trainMultinomialNaiveBayes(
+            x=x, y=y, outputPath=args.classifierOutput, vectorizer=vectorizer
+        )
 
 
 def loadVectorizer(
@@ -26,19 +30,30 @@ def loadVectorizer(
 ) -> TfidfVectorizer | Word2Vec | FastText:
     match vectorizerType:
         case "tf-idf":
-            model: TfidfVectorizer = load(filename=vectorizer)
+            test = load(vectorizer)
+            print(type(test))
+            print("Test")
+            quit()
         case "word2vec":
-            model: Word2Vec = Word2Vec.load(vectorizer)
+            return Word2Vec.load(vectorizer)
         case "fasttext":
-            model: FastText = FastText.load(vectorizer)
-    return model
+            return FastText.load(vectorizer)
 
 
-def trainMultinomialNaiveBayes(x: ndarray, y: ndarray, outputPath: Path) -> None:
+def trainMultinomialNaiveBayes(
+    x: ndarray, y: ndarray, outputPath: Path, vectorizer: TfidfVectorizer
+) -> None:
     parameters: dict[str, List[Any]] = {
         "multinomialnb__alpha": [1.0, 0.5, 1.5],
         "multinomialnb__force_alpha": [True],
     }
+
+    print(type(vectorizer))
+
+    X = vectorizer.transform(raw_documents=x)
+
+    # print(type(X))
+    quit()
 
     pipeline: Pipeline = make_pipeline(TfidfVectorizer(), MultinomialNB())
     gscv: GridSearchCV = GridSearchCV(

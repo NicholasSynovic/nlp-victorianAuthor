@@ -100,7 +100,7 @@ def getArgs() -> Namespace:
         formatter_class=AlphabeticalOrderHelpFormatter,
     )
 
-    vectorizer.add_argument(
+    classifier.add_argument(
         "--naive-bayes",
         action="store_true",
         help="Train a naive bayes classifier",
@@ -131,6 +131,16 @@ def getArgs() -> Namespace:
         type=Path,
         required=True,
         help="Training dataset to use",
+    )
+
+    classifier.add_argument(
+        "-o",
+        "--output",
+        default=Path("model"),
+        type=Path,
+        required=False,
+        help="Directory to save the classifiers to (default: ./model/)",
+        dest="classifierOutput",
     )
 
     infrenceMode: ArgumentParser = subparsers.add_parser(

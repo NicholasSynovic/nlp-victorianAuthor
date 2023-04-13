@@ -1,8 +1,8 @@
 from argparse import Namespace
 from pathlib import Path
+from pickle import dump
 
 from gensim.models import FastText, Word2Vec
-from joblib import dump
 from numpy import ndarray
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -28,7 +28,8 @@ def trainTFIDF(x: ndarray, outputPath: Path) -> None:
 
     print("Training TF-IDF vectorizer...")
     tfidf.fit(raw_documents=x)
-    dump(value=tfidf, filename=Path(outputPath, "tfidf.joblib"))
+    with open(Path(outputPath, "tfidf.pickle"), "wb") as outFile:
+        dump(obj=tfidf, file=outFile)
 
 
 def trainWord2Vec(x: ndarray, outputPath: Path) -> None:

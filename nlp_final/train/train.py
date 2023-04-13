@@ -22,4 +22,4 @@ def main(args: Namespace) -> None:
         case "vectorizer":
             vectorizer.main(args=args, x=x)
         case "classifier":
-            classifier.main()
+            classifier.main(args=args, x=x, y=y)

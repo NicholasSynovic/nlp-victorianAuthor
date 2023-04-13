@@ -164,3 +164,4 @@ dataset/*
 *.joblib
 *.gensim
 *.npy
+*.pickle
