@@ -1,6 +1,6 @@
 from argparse import Namespace
-from itertools import combinations
-from typing import Any, List, Tuple
+from pathlib import Path
+from typing import Any, List
 
 from joblib import dump
 from numpy import ndarray
@@ -9,6 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import GridSearchCV
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline, make_pipeline
+from sklearn.svm import SVC
 from sklearnex import patch_sklearn
 
 from nlp_final.data import dataHandler
@@ -27,12 +28,16 @@ def main(args: Namespace) -> None:
     validationY: ndarray = data[1]["author"].to_numpy()
 
     trainMultinomialNaiveBayes(
-        x=x, y=y, validationX=validationX, validationY=validationY
+        x=x,
+        y=y,
+        validationX=validationX,
+        validationY=validationY,
+        outputPath=args.output,
     )
 
 
 def trainMultinomialNaiveBayes(
-    x: ndarray, y: ndarray, validationX: ndarray, validationY: ndarray
+    x: ndarray, y: ndarray, validationX: ndarray, validationY: ndarray, outputPath: Path
 ) -> None:
     parameters: dict[str, List[Any]] = {
         "tfidfvectorizer__decode_error": ["ignore"],
@@ -46,7 +51,7 @@ def trainMultinomialNaiveBayes(
     pipeline: Pipeline = make_pipeline(TfidfVectorizer(), MultinomialNB())
 
     gsvc: GridSearchCV = GridSearchCV(
-        estimator=pipeline, param_grid=parameters, verbose=2, n_jobs=10
+        estimator=pipeline, param_grid=parameters, n_jobs=1
     )
 
     gsvc.fit(X=x, y=y)
@@ -55,4 +60,4 @@ def trainMultinomialNaiveBayes(
     score: float = model.score(X=validationX, y=validationY)
 
     print(f"Best model score: {score}")
-    dump(value=model, filename="multinomialNB.joblib")
+    dump(value=model, filename=Path(outputPath, "multinomialNB.joblib"))
