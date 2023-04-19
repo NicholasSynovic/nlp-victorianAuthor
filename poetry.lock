@@ -163,17 +163,6 @@ test = ["hypothesis (>=6.34.2)", "pytest (>=7.0.0)", "pytest-asyncio (>=0.17.0)"
 xml = ["lxml (>=4.6.3)"]
 
 [[package]]
-name = "progress"
-version = "1.6"
-description = "Easy to use progress bars"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "progress-1.6.tar.gz", hash = "sha256:c9c86e98b5c03fa1fe11e3b67c1feda4788b8d0fe7336c2ff7d5644ccfba34cd"},
-]
-
-[[package]]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
@@ -343,4 +332,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "ab111d6c0faf04cdacaa40512baa11f1a2e8f6db765726ae44f24f0f13b9cd8d"
+content-hash = "fc3b53c2780b08290c716bfa1ab0ccc97b338447dd3521a448cbb9de0a773469"

@@ -11,12 +11,8 @@ python = "^3.10"
 scikit-learn = "^1.2.2"
 pandas = "^2.0.0"
 numpy = "^1.24.2"
-progress = "^1.6"
 gensim = "^4.3.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-nlp-final = "nlp_final.main:main"
