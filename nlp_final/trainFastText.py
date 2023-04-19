@@ -18,7 +18,7 @@ def main() -> None:
     trainingSplit: DataFrame = splits.train
 
     print("Training FastText vectorizer...")
-    v: FastText = trainFastText()(x=trainingSplit["text"])
+    v: FastText = trainFastText(x=trainingSplit["text"])
 
     print(f"Saving vectorizer to {fasttextPath.__str__()}")
     v.save(fasttextPath.__str__())
