@@ -2,11 +2,9 @@ from pathlib import Path
 from typing import Tuple
 
 import dataHandler
+from common import trainingDataPath, word2vecPath
 from gensim.models import Word2Vec
 from pandas import DataFrame, Series
-
-dataPath: Path = Path("../dataset/training.csv")
-vectorizerPath: Path = Path("../models/word2vec.gensim").resolve()
 
 
 def trainWord2Vec(x: Series) -> Word2Vec:
@@ -16,15 +14,15 @@ def trainWord2Vec(x: Series) -> Word2Vec:
 
 def main() -> None:
     print("Splitting data...")
-    df: DataFrame = dataHandler.loadData(path=dataPath)
+    df: DataFrame = dataHandler.loadData(path=trainingDataPath)
     splits: Tuple[DataFrame] = dataHandler.splitData(df=df)
     trainingSplit: DataFrame = splits.train
 
     print("Training Word2Vec vectorizer...")
     v: Word2Vec = trainWord2Vec(x=trainingSplit["text"])
 
-    print(f"Saving vectorizer to {vectorizerPath.__str__()}")
-    v.save(vectorizerPath.__str__())
+    print(f"Saving vectorizer to {word2vecPath.__str__()}")
+    v.save(word2vecPath.__str__())
 
 
 if __name__ == "__main__":

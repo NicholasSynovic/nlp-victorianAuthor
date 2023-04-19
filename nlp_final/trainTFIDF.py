@@ -2,12 +2,10 @@ from pathlib import Path
 from typing import Tuple
 
 import dataHandler
+from common import tfidfPath, trainingDataPath
 from joblib import dump
 from pandas import DataFrame, Series
 from sklearn.feature_extraction.text import TfidfVectorizer
-
-dataPath: Path = Path("../dataset/training.csv")
-vectorizerPath: Path = Path("../models/tfidf.joblib").resolve()
 
 
 def trainTFIDF(x: Series) -> TfidfVectorizer:
@@ -20,7 +18,7 @@ def trainTFIDF(x: Series) -> TfidfVectorizer:
 
 def main() -> None:
     print("Splitting data...")
-    df: DataFrame = dataHandler.loadData(path=dataPath)
+    df: DataFrame = dataHandler.loadData(path=trainingDataPath)
     splits: Tuple[DataFrame] = dataHandler.splitData(df=df)
     trainingSplit: DataFrame = splits.train
 
@@ -28,8 +26,8 @@ def main() -> None:
 
     v: TfidfVectorizer = trainTFIDF(x=trainingSplit["text"])
 
-    print(f"Saving vectorizer to {vectorizerPath.__str__()}")
-    dump(value=v, filename=vectorizerPath)
+    print(f"Saving vectorizer to {tfidfPath.__str__()}")
+    dump(value=v, filename=tfidfPath)
 
 
 if __name__ == "__main__":
