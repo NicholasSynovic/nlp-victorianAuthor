@@ -24,8 +24,6 @@ def main() -> None:
     word2vec: Word2Vec
     fasttext, tfidf, word2vec = loadVectorizers()
 
-    print("Training MLP with FastText...")
-
     print("Training MLP with TF-IDF...")
     mlp: MLPClassifier = MLPClassifier()
     trainingDocuments: spmatrix = tfidf.transform(raw_documents=trainingSplit["text"])
