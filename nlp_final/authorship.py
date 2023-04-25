@@ -9,9 +9,10 @@ from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.layers import LSTM, Dense, Embedding
 from keras.models import Sequential
 from keras.preprocessing.text import Tokenizer
-from keras.utils import pad_sequences
+from keras.utils import pad_sequences, to_categorical
 from numpy import ndarray
 from pandas import DataFrame, Series
+from sklearn.model_selection import train_test_split
 
 TRAINING_DATASET: Path = Path(
     "../dataset/Gungor_2018_VictorianAuthorAttribution_data-train.csv"
@@ -32,7 +33,7 @@ def getArgs() -> Namespace:
         "-i",
         "--input-dimension-size",
         type=int,
-        default=1000,
+        default=10001,
         required=False,
         help="Input dimension size into the RNN's first Embedding layer",
     )
@@ -66,8 +67,31 @@ def padSequences(tokenizer: Tokenizer, text: Series, sequenceMaxLength: int) -> 
     return paddedSequences
 
 
+def createSplits(sequences: ndarray, labels: Series) -> dict[list]:
+    print("Splitting data...")
+
+    xTrain, xTest, yTrain, yTest = train_test_split(
+        sequences,
+        labels,
+        test_size=0.15,
+        train_size=0.85,
+        random_state=42,
+        shuffle=True,
+    )
+
+    print("Split data ✅")
+    return {
+        "xTrain": xTrain,
+        "yTrain": yTrain,
+        "xTest": xTest,
+        "yTest": yTest,
+    }
+
+
 def buildModel(
-    inputDimensionSize: int, outputDimensionSize: int, inputLength: int
+    inputDimensionSize: int = 10001,
+    outputDimensionSize: int = 32,
+    inputLength: int = 1000,
 ) -> Sequential:
     print("Creating model...")
     model: Sequential = Sequential()
@@ -92,10 +116,9 @@ def buildModel(
     )
     model.compile(
         optimizer="adam",
-        loss=losses.categorical_crossentropy,
+        loss="categorical_crossentropy",
         metrics=["accuracy"],
     )
-    model.compile()
     model.summary()
 
     print("Created model ✅")
@@ -117,7 +140,7 @@ def saveModel(model: Sequential) -> None:
 
 
 def main() -> None:
-    args: Namespace = getArgs()
+    # args: Namespace = getArgs()
 
     numpy.random.seed(seed=42)
 
@@ -133,20 +156,20 @@ def main() -> None:
     df: DataFrame = loadData(path=TRAINING_DATASET)
 
     tokenizer: Tokenizer = createTokenizer(text=df["text"])
-    padSequences(
-        tokenizer=tokenizer, text=df["text"], sequenceMaxLength=args.max_length
+    sequences: ndarray = padSequences(
+        tokenizer=tokenizer,
+        text=df["text"],
+        sequenceMaxLength=1000,
     )
 
-    veaa: Sequential = buildModel(
-        inputDimensionSize=args.input_dimension_size,
-        outputDimensionSize=args.output_dimension_size,
-        inputLength=args.max_length,
-    )
+    splits: dict[list] = createSplits(sequences=sequences, labels=df["author"])
+
+    veaa: Sequential = buildModel()
 
     print("Training VEAA model...")
     veaa.fit(
-        x=df["text"],
-        y=df["author"],
+        x=splits["xTrain"],
+        y=splits["yTrain"],
         batch_size=1000,
         epochs=100,
         callbacks=[tensorboardCallback],
