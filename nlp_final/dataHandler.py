@@ -11,6 +11,8 @@ output = namedtuple(typename="Output", field_names=["test", "train"])
 
 
 def loadData(path: Path) -> DataFrame:
+    print(f"Loading data from: {path.__str__()}...")
+
     df: DataFrame = pandas.read_csv(
         filepath_or_buffer=path.absolute(),
         dtype={"text": str, "author": int},
@@ -18,6 +20,7 @@ def loadData(path: Path) -> DataFrame:
         encoding="utf-8",
         encoding_errors="replace",
     )
+    print(f"Loaded data from: {path.__str__()}...")
     return df
 
 

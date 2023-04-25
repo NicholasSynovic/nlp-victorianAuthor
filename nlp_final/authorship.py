@@ -1,49 +1,137 @@
-import pandas
-import tensorflow as tf
+import os
+from argparse import ArgumentParser, Namespace
+from logging import ERROR, Logger
+from pathlib import Path
+from warnings import filterwarnings
+
+import numpy
+import tensorflow
+from dataHandler import loadData
+from keras import losses
+from keras.callbacks import ModelCheckpoint
+from keras.layers import LSTM, Dense, Embedding, TextVectorization
+from keras.models import Sequential
+from keras.preprocessing.text import Tokenizer
+from keras.utils import pad_sequences, to_categorical
+from numpy import ndarray
+from pandas import DataFrame, Series
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras.layers import LSTM, Dense, Embedding
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.preprocessing import sequence
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.utils import to_categorical
 
-# fix random seed for reproducibility
-tf.random.set_seed(7)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "0"
+tfLogger: Logger = tensorflow.get_logger()
+tfLogger.setLevel(level=ERROR)
 
-# Load the data
-data = pandas.read_csv("training.csv", usecols=["text", "author"], sep=",")
-texts = data["text"]  # Extract the text column
-labels = data["author"] - 1  # Extract the label column
+filterwarnings(action="always")
 
-# Convert the text into numerical sequences
-tokenizer = Tokenizer()
-tokenizer.fit_on_texts(texts)
-sequences = tokenizer.texts_to_sequences(texts)
-
-
-# Pad the sequences to a fixed length
-max_sequence_length = 1000  # Set the maximum sequence length
-sequences = sequence.pad_sequences(sequences, maxlen=max_sequence_length)
-
-
-# Encode the labels into one-hot vectors
-num_classes = 50  # Set the number of classes
-labels = to_categorical(labels, num_classes)
-
-# Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    sequences, labels, test_size=0.2, random_state=42
+TRAINING_DATASET: Path = Path(
+    "../dataset/Gungor_2018_VictorianAuthorAttribution_data-train.csv"
 )
 
 
-# load the dataset but only keep the top n words, zero the rest
-top_words = 10001
+def getArgs() -> Namespace:
+    parser: ArgumentParser = ArgumentParser(prog="RNN Training for NLP Class")
+    parser.add_argument(
+        "-m",
+        "--max-length",
+        type=int,
+        default=1000,
+        required=False,
+        help="Padding value to ensure that all text sequences are the same length",
+    )
+    parser.add_argument(
+        "-i",
+        "--input-dimension-size",
+        type=int,
+        default=1000,
+        required=False,
+        help="Input dimension size into the RNN's first Embedding layer",
+    )
+    parser.add_argument(
+        "-o",
+        "--output-dimension-size",
+        type=int,
+        default=32,
+        required=False,
+        help="Output dimension size from the RNN's first Embedding layer",
+    )
+    return parser.parse_args()
 
-filepath = "authorship_rnn_model.h5"
-checkpoint = ModelCheckpoint(
-    filepath, monitor="val_loss", verbose=1, save_best_only=True, mode="min"
-)
+
+def createTokenizer(text: Series) -> Tokenizer:
+    tokenizer: Tokenizer = Tokenizer()
+    tokenizer.fit_on_texts(texts=text)
+
+    return tokenizer
+
+
+def buildModel(
+    inputDimensionSize: int, outputDimensionSize: int, inputLength: int
+) -> None:
+    model: Sequential = Sequential()
+    model.add(
+        layer=Embedding(
+            input_dim=inputDimensionSize,
+            output_dim=outputDimensionSize,
+            input_length=inputLength,
+        )
+    )
+    model.add(
+        layer=LSTM(
+            units=100,
+            activation="relu",
+        )
+    )
+    model.add(
+        Dense(
+            units=50,
+            activation="softmax",
+        )
+    )
+    model.compile(
+        optimizer="adam",
+        loss=losses.categorical_crossentropy,
+        metrics=["accuracy"],
+    )
+    model.compile()
+    model.summary()
+
+    print(type(model))
+
+
+def main() -> None:
+    args: Namespace = getArgs()
+
+    numpy.random.seed(seed=42)
+
+    df: DataFrame = loadData(path=TRAINING_DATASET)
+
+    tokenizer: Tokenizer = createTokenizer(text=df["text"])
+    textSequences: list[list] = tokenizer.texts_to_sequences(texts=df["text"])
+
+    paddedSequences: ndarray = pad_sequences(
+        sequences=textSequences, maxlen=args["max_length"]
+    )
+
+    model = buildModel(
+        inputDimensionSize=args["input_dimension_size"],
+        outputDimensionSize=args["output_dimension_size"],
+        inputLength=args["max_length"],
+    )
+
+
+if __name__ == "__main__":
+    main()
+
+quit()
+
+
+# # load the dataset but only keep the top n words, zero the rest
+# top_words = 10001
+
+# filepath = "authorship_rnn_model.h5"
+# checkpoint = ModelCheckpoint(
+#     filepath, monitor="val_loss", verbose=1, save_best_only=True, mode="min"
+# )
 
 # truncate and pad input sequences
 """
