@@ -2,8 +2,9 @@ from collections import namedtuple
 from pathlib import Path
 from typing import Type
 
+import numpy
 import pandas
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from sklearn.model_selection import train_test_split
 
 output = namedtuple(typename="Output", field_names=["test", "train"])
@@ -29,11 +30,14 @@ def splitData(df: DataFrame) -> Type[tuple]:
 
 def reduce(df: DataFrame) -> None:
     """Reduces to HuggingFace's dataset AutoTrain size constraints"""
-    print(df)
+    # https://www.statology.org/stratified-sampling-pandas/
+    maxRowCount: int = 3000
 
+    reducedDF: DataFrame = (
+        df.groupby("author", group_keys=False)
+        .apply(lambda x: x.sample(int(numpy.rint(maxRowCount * len(x) / len(df)))))
+        .sample(frac=1)
+        .reset_index(drop=True)
+    )
 
-dataset: Path = Path(
-    "../dataset/Gungor_2018_VictorianAuthorAttribution_data-train.csv"
-).resolve()
-df: DataFrame = loadData(path=dataset)
-reduce(df=df)
+    return reducedDF
