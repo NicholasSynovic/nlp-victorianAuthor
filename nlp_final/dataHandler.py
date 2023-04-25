@@ -4,7 +4,7 @@ from typing import Type
 
 import numpy
 import pandas
-from pandas import DataFrame, Series
+from pandas import DataFrame
 from sklearn.model_selection import train_test_split
 
 output = namedtuple(typename="Output", field_names=["test", "train"])
