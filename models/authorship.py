@@ -1,11 +1,11 @@
 import pandas
 import tensorflow as tf
+from keras.layers import LSTM, Dense, Embedding
+from keras.models import Sequential
+from keras.preprocessing import sequence
+from keras.preprocessing.text import Tokenizer
+from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.layers import LSTM, Dense, Embedding
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.preprocessing import sequence
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.utils import to_categorical
 
 # fix random seed for reproducibility
 tf.random.set_seed(7)
