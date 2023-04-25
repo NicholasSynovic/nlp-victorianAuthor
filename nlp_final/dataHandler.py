@@ -35,7 +35,12 @@ def reduce(df: DataFrame) -> None:
 
     reducedDF: DataFrame = (
         df.groupby("author", group_keys=False)
-        .apply(lambda x: x.sample(int(numpy.rint(maxRowCount * len(x) / len(df)))))
+        .apply(
+            lambda x: x.sample(
+                n=int(numpy.rint(maxRowCount * len(x) / len(df))),
+                random_state=42,
+            )
+        )
         .sample(frac=1)
         .reset_index(drop=True)
     )
