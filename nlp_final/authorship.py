@@ -1,11 +1,12 @@
 import pandas
 import tensorflow as tf
-from keras.layers import LSTM, Dense, Embedding
-from keras.models import Sequential
-from keras.preprocessing import sequence
-from keras.preprocessing.text import Tokenizer
-from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.layers import LSTM, Dense, Embedding
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.preprocessing import sequence
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.utils import to_categorical
 
 # fix random seed for reproducibility
 tf.random.set_seed(7)
@@ -39,6 +40,10 @@ X_train, X_test, y_train, y_test = train_test_split(
 # load the dataset but only keep the top n words, zero the rest
 top_words = 10001
 
+filepath = "authorship_rnn_model.h5"
+checkpoint = ModelCheckpoint(
+    filepath, monitor="val_loss", verbose=1, save_best_only=True, mode="min"
+)
 
 # truncate and pad input sequences
 """
@@ -61,11 +66,16 @@ model.compile(
     loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
 )  # Use categorical_crossentropy loss for multiclass classification
 print(model.summary())
-model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=3, batch_size=32)
+model.fit(
+    X_train,
+    y_train,
+    validation_data=(X_test, y_test),
+    epochs=30,
+    batch_size=64,
+    callbacks=[checkpoint],
+)
 
 
 # Final evaluation of the model
 scores = model.evaluate(X_test, y_test, verbose=0)
 print("Accuracy: %.2f%%" % (scores[1] * 100))
-
-model.save("authorship_rnn_model.h5")
