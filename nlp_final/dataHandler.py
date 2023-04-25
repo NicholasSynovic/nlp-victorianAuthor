@@ -20,7 +20,7 @@ def loadData(path: Path) -> DataFrame:
         encoding="utf-8",
         encoding_errors="replace",
     )
-    print(f"Loaded data from: {path.__str__()}...")
+    print(f"Loaded data from: {path.__str__()} ✅")
     return df
 
 
