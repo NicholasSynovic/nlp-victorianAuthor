@@ -19,6 +19,7 @@ data = pandas.read_csv(
     "../dataset/Gungor_2018_VictorianAuthorAttribution_data-train.csv",
     usecols=["text", "author"],
     sep=",",
+    encoding_errors="ignore",
 )
 texts = data["text"]  # Extract the text column
 labels = data["author"] - 1  # Extract the label column
