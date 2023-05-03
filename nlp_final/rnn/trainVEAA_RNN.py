@@ -134,10 +134,12 @@ def evaluateModel(x: list[list], y: ndarray, crY: Series, model: Sequential) -> 
 
     prediction: ndarray = numpy.argmax(a=prediction, axis=1)
     matrix: ndarray = confusion_matrix(y_true=crY, y_pred=prediction)
-    perClassAccuracy: Series = Series(
-        matrix.diagonal() / matrix.sum(axis=1)
-    ).sort_values()
-    print(perClassAccuracy)
+    perClassAccuracy: Series = Series(matrix.diagonal() / matrix.sum(axis=1))
+    perClassAccuracy.index = numpy.arange(1, len(perClassAccuracy) + 1)
+    perClassAccuracy.sort_values(inplace=True)
+
+    print("Least accurate classes: \n", perClassAccuracy.head(n=5))
+    print("Most accurate classes: \n", perClassAccuracy.tail(n=5))
 
     print("Accuracy: ", accuracy)
     print("Precision: ", precision)
