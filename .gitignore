@@ -163,3 +163,4 @@ cython_debug/
 dataset/*
 models/*
 logs/*
+nlp_final/logs*
