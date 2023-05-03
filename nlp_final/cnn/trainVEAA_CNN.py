@@ -18,8 +18,8 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing import sequence
 
-TRAINING_DATA: Path = Path("../../dataset/trainingData_5-2-2023.csv")
-TESTING_DATA: Path = Path("../../dataset/testingData_5-2-2023.csv")
+TRAINING_DATA: Path = Path("../../dataset/training.csv")
+TESTING_DATA: Path = Path("../../dataset/testing.csv")
 LOG_FOLDER: Path = Path(
     "../../logs/veaa-"
     + datetime.now().strftime(
@@ -172,8 +172,10 @@ def main() -> None:
         shuffle=True,
     )
 
-    # tokenizer: Tokenizer = createTokenizer(documents=xTrain)
     tokenizer: Tokenizer = loadTokenizer()
+
+    # Uncomment out the below section to train a tokenizer from scratch
+    # tokenizer: Tokenizer = createTokenizer(documents=xTrain)
 
     xTrain: list[list] = transformData(tokenizer=tokenizer, documents=xTrain)
     xValidation: list[list] = transformData(tokenizer=tokenizer, documents=xValidation)
@@ -183,6 +185,8 @@ def main() -> None:
     yTest: ndarray = transformLabels(labels=testingDF["author"] - 1)
 
     model: Sequential = loadModel()
+
+    # Uncomment out the below section to train a model from scratch
     # model: Sequential = buildModel()
 
     # trainModel(

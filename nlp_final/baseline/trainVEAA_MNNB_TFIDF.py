@@ -11,8 +11,8 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 
-TRAINING_DATA: Path = Path("../../dataset/trainingData_5-2-2023.csv")
-TESTING_DATA: Path = Path("../../dataset/testingData_5-2-2023.csv")
+TRAINING_DATA: Path = Path("../../dataset/training.csv")
+TESTING_DATA: Path = Path("../../dataset/testing.csv")
 
 numpy.random.seed(seed=42)
 
@@ -76,16 +76,21 @@ def main() -> None:
         shuffle=True,
     )
 
-    # tfidf: TfidfVectorizer = createTFIDF(documents=xTrain)
     tfidf: TfidfVectorizer = loadTFIDF()
+
+    # Uncomment out the below section to train a vectorizer from scratch
+    # tfidf: TfidfVectorizer = createTFIDF(documents=xTrain)
 
     xTrain: ndarray = transformData(tfidf=tfidf, documents=xTrain)
     xValidation: ndarray = transformData(tfidf=tfidf, documents=xValidation)
     xTest: ndarray = transformData(tfidf=tfidf, documents=testingDF["text"])
     yTest: Series = testingDF["author"]
 
-    # mnnb: MultinomialNB = trainModel(x=xTrain, y=yTrain)
     mnnb: MultinomialNB = loadModel()
+
+    # Uncomment out the below section to train a model from scratch
+    # mnnb: MultinomialNB = trainModel(x=xTrain, y=yTrain)
+
     evaluateModel(x=xTest, y=yTest, mnnb=mnnb)
 
 
