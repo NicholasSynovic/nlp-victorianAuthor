@@ -7,18 +7,20 @@ import pandas
 from joblib import dump, load
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.layers import LSTM, Dense, Embedding
-from keras.models import Sequential
+from keras.metrics import Accuracy, Precision, Recall
+from keras.models import Sequential, load_model
 from keras.preprocessing.text import Tokenizer
 from keras.utils import to_categorical
 from numpy import ndarray
 from pandas import DataFrame, Series
+from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing import sequence
 
 TRAINING_DATA: Path = Path("../../dataset/trainingData_5-2-2023.csv")
 TESTING_DATA: Path = Path("../../dataset/testingData_5-2-2023.csv")
 LOG_FOLDER: Path = Path(
-    "../logs/veaa-"
+    "../../logs/veaa-"
     + datetime.now().strftime(
         "%Y%m%d-%H%M%S",
     )
@@ -110,6 +112,33 @@ def trainModel(
     print("Trained model ✅")
 
 
+def loadModel() -> Sequential:
+    return load_model(filepath="../../models/veaaRNN.h5")
+
+
+def evaluateModel(x: list[list], y: ndarray, model: Sequential) -> None:
+    prediction: ndarray = model.predict(x=x, workers=cpu_count() // 2)
+
+    accuracy: Accuracy = Accuracy()
+    precision: Precision = Precision()
+    recall: Recall = Recall()
+
+    accuracy.update_state(y_true=y, y_pred=prediction)
+    precision.update_state(y_true=y, y_pred=prediction)
+    recall.update_state(y_true=y, y_pred=prediction)
+
+    accuracy: float = float(accuracy.result())
+    precision: float = float(precision.result())
+    recall: float = float(recall.result())
+
+    f1Score: float = 2 * ((precision * recall) / (precision + recall))
+
+    print("Accuracy: ", accuracy)
+    print("Precision: ", precision)
+    print("Recall: ", recall)
+    print("F1-Score: ", f1Score)
+
+
 def main() -> None:
     trainingDF: DataFrame = pandas.read_csv(filepath_or_buffer=TRAINING_DATA)
 
@@ -130,15 +159,18 @@ def main() -> None:
     yTrain: ndarray = transformLabels(labels=yTrain - 1)
     yTest: ndarray = transformLabels(labels=yTest - 1)
 
-    model: Sequential = buildModel()
+    model: Sequential = loadModel()
+    # model: Sequential = buildModel()
 
-    trainModel(
-        xTrain=xTrain,
-        yTrain=yTrain,
-        xTest=xTest,
-        yTest=yTest,
-        model=model,
-    )
+    # trainModel(
+    #     xTrain=xTrain,
+    #     yTrain=yTrain,
+    #     xTest=xTest,
+    #     yTest=yTest,
+    #     model=model,
+    # )
+
+    evaluateModel(x=xTest, y=yTest, model=model)
 
 
 if __name__ == "__main__":

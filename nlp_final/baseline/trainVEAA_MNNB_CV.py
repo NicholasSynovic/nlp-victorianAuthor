@@ -53,13 +53,21 @@ def loadModel() -> MultinomialNB:
 
 def evaluateModel(x: ndarray, y: Series, mnnb: MultinomialNB) -> None:
     prediction: ndarray = mnnb.predict(X=x)
-    print(classification_report(y_true=y, y_pred=prediction))
+    print(prediction)
+    print(
+        classification_report(
+            y_true=y,
+            y_pred=prediction,
+            digits=16,
+        )
+    )
 
 
 def main() -> None:
     trainingDF: DataFrame = pandas.read_csv(filepath_or_buffer=TRAINING_DATA)
+    testingDF: DataFrame = pandas.read_csv(filepath_or_buffer=TESTING_DATA)
 
-    xTrain, xTest, yTrain, yTest = train_test_split(
+    xTrain, xValidation, yTrain, yValidation = train_test_split(
         trainingDF["text"],
         trainingDF["author"],
         test_size=0.15,
@@ -68,14 +76,16 @@ def main() -> None:
         shuffle=True,
     )
 
-    cv: CountVectorizer = createCV(documents=xTrain)
-    # cv: CountVectorizer = loadCV()
+    # cv: CountVectorizer = createCV(documents=xTrain)
+    cv: CountVectorizer = loadCV()
 
     xTrain: ndarray = transformData(cv=cv, documents=xTrain)
-    xTest: ndarray = transformData(cv=cv, documents=xTest)
+    xValidation: ndarray = transformData(cv=cv, documents=xValidation)
+    xTest: ndarray = transformData(cv=cv, documents=testingDF["text"])
+    yTest: Series = testingDF["author"]
 
-    mnnb: MultinomialNB = trainModel(x=xTrain, y=yTrain)
-    # mnnb: MultinomialNB = loadModel()
+    # mnnb: MultinomialNB = trainModel(x=xTrain, y=yTrain)
+    mnnb: MultinomialNB = loadModel()
     evaluateModel(x=xTest, y=yTest, mnnb=mnnb)
 
 
