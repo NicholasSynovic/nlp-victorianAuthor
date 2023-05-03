@@ -21,6 +21,10 @@
     - [RNN](#rnn)
       - [Train a Model (RNN)](#train-a-model-rnn)
       - [Evaluate A Pre-Trained Model (RNN)](#evaluate-a-pre-trained-model-rnn)
+  - [Running the Demos](#running-the-demos)
+    - [Baseline Demo](#baseline-demo)
+    - [CNN Demo](#cnn-demo)
+    - [RNN Demo](#rnn-demo)
 
 ## Authors
 
@@ -117,3 +121,20 @@ For evaluating or training an LSTM RNN
 #### Evaluate A Pre-Trained Model (RNN)
 
 1. Run `python3.10 nlp_final/rnn/trainVEAA_RNN.py`
+
+## Running the Demos
+
+The demos exist only for the final presentation.
+
+### Baseline Demo
+
+1. Run `python3.10 demos/baselineDemo_CV.py`
+1. Run `python3.10 demos/baselineDemo_TFIDF.py`
+
+### CNN Demo
+
+1. Run `python3.10 demos/cnnDemo.py`
+
+### RNN Demo
+
+1. Run `python3.10 demos/rnnDemo.py`
