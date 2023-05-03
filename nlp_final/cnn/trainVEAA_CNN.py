@@ -6,15 +6,15 @@ import numpy
 import pandas
 from joblib import dump, load
 from keras.callbacks import ModelCheckpoint, TensorBoard
-from keras.layers import (Activation, Conv1D, Dense, Dropout, Embedding,
-                          GlobalMaxPooling1D)
-from keras.metrics import Accuracy, Precision, Recall
+from keras.layers import Conv1D, Dense, Dropout, Embedding, GlobalMaxPooling1D
+from keras.metrics import Precision, Recall
 from keras.models import Sequential, load_model
 from keras.optimizers import RMSprop
 from keras.preprocessing.text import Tokenizer
 from keras.utils import to_categorical
 from numpy import ndarray
 from pandas import DataFrame, Series
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing import sequence
 
@@ -128,7 +128,7 @@ def loadModel() -> Sequential:
     return load_model(filepath="../../models/veaaCNN.h5")
 
 
-def evaluateModel(x: list[list], y: ndarray, model: Sequential) -> None:
+def evaluateModel(x: list[list], y: ndarray, crY: Series, model: Sequential) -> None:
     prediction: ndarray = model.predict(x=x, workers=cpu_count() // 2)
 
     accuracy: float = model.get_metrics_result()["accuracy"]
@@ -143,6 +143,13 @@ def evaluateModel(x: list[list], y: ndarray, model: Sequential) -> None:
     recall: float = float(recall.result())
 
     f1Score: float = 2 * ((precision * recall) / (precision + recall))
+
+    prediction: ndarray = numpy.argmax(a=prediction, axis=1)
+    matrix: ndarray = confusion_matrix(y_true=crY, y_pred=prediction)
+    perClassAccuracy: Series = Series(
+        matrix.diagonal() / matrix.sum(axis=1)
+    ).sort_values()
+    print(perClassAccuracy)
 
     print("Accuracy: ", accuracy)
     print("Precision: ", precision)
@@ -184,7 +191,7 @@ def main() -> None:
     #     model=model,
     # )
 
-    evaluateModel(x=xTest, y=yTest, model=model)
+    evaluateModel(x=xTest, y=yTest, crY=testingDF["author"] - 1, model=model)
 
 
 if __name__ == "__main__":
