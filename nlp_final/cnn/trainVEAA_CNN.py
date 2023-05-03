@@ -6,9 +6,11 @@ import numpy
 import pandas
 from joblib import dump, load
 from keras.callbacks import ModelCheckpoint, TensorBoard
-from keras.layers import LSTM, Dense, Embedding
+from keras.layers import (Activation, Conv1D, Dense, Dropout, Embedding,
+                          GlobalMaxPooling1D)
 from keras.metrics import Accuracy, Precision, Recall
 from keras.models import Sequential, load_model
+from keras.optimizers import RMSprop
 from keras.preprocessing.text import Tokenizer
 from keras.utils import to_categorical
 from numpy import ndarray
@@ -32,13 +34,13 @@ def createTokenizer(documents: Series) -> Tokenizer:
     print("Creating Tokenizer...")
     tokenizer: Tokenizer = Tokenizer()
     tokenizer.fit_on_texts(texts=documents)
-    dump(value=tokenizer, filename="../../models/Tokenizer_RNN.joblib")
+    dump(value=tokenizer, filename="../../models/Tokenizer_CNN.joblib")
     print("Created Tokenizer ✅")
     return tokenizer
 
 
 def loadTokenizer() -> Tokenizer:
-    return load(filename="../../models/Tokenizer_RNN.joblib")
+    return load(filename="../../models/Tokenizer_CNN.joblib")
 
 
 def transformData(tokenizer: Tokenizer, documents: Series) -> list[list]:
@@ -57,19 +59,30 @@ def transformLabels(labels: Series) -> ndarray:
 
 
 def buildModel() -> Sequential:
+    rmsProp: RMSprop = RMSprop(lr=0.001)
+
     model = Sequential()
     model.add(
         Embedding(
             input_dim=10001,
-            output_dim=32,
+            output_dim=128,
             input_length=1000,
         )
     )
-    model.add(LSTM(units=100))
+    model.add(
+        Conv1D(
+            filters=256,
+            kernel_size=3,
+            activation="relu",
+        )
+    )
+    model.add(GlobalMaxPooling1D())
+    model.add(Dense(units=512, activation="relu"))
+    model.add(Dropout(rate=0.25))
     model.add(Dense(units=50, activation="softmax"))
     model.compile(
         loss="categorical_crossentropy",
-        optimizer="adam",
+        optimizer=rmsProp,
         metrics=["accuracy"],
     )
     return model
@@ -83,7 +96,7 @@ def trainModel(
     model: Sequential,
 ) -> None:
     mc: ModelCheckpoint = ModelCheckpoint(
-        filepath="../../models/veaaRNN.h5",
+        filepath="../../models/veaaCNN.h5",
         monitor="val_accuracy",
         verbose=1,
         save_best_only=True,
@@ -102,17 +115,17 @@ def trainModel(
         x=xTrain,
         y=yTrain,
         batch_size=32,
-        epochs=30,
+        epochs=5,
         callbacks=[mc, tb],
         validation_data=(xTest, yTest),
-        workers=cpu_count() // 2,
+        # workers=cpu_count() // 2,
     )
 
     print("Trained model ✅")
 
 
 def loadModel() -> Sequential:
-    return load_model(filepath="../../models/veaaRNN.h5")
+    return load_model(filepath="../../models/veaaCNN.h5")
 
 
 def evaluateModel(x: list[list], y: ndarray, model: Sequential) -> None:
