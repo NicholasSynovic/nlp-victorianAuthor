@@ -5,9 +5,9 @@ import pandas
 from joblib import dump, load
 from numpy import ndarray
 from pandas import DataFrame, Series
+from scipy.sparse import spmatrix
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.metrics import (accuracy_score, f1_score, precision_score,
-                             recall_score)
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 
@@ -24,32 +24,77 @@ def createCV(documents: Series) -> CountVectorizer:
     )
     cv.fit(raw_documents=documents)
     print("Created CountVectorizer ✅")
-    dump(value=cv, filename="../models/countVectorizer.joblib")
+    dump(value=cv, filename="../models/CountVectorizer.joblib")
     return cv
 
 
 def loadCV() -> CountVectorizer:
-    return load(filename="../models/countVectorizer.joblib")
+    return load(filename="../models/CountVectorizer.joblib")
 
 
-def transformData(cv: CountVectorizer, documents: Series) -> ndarray:
+def createTFIDF(documents: Series) -> TfidfVectorizer:
+    print("Creating TfidfVectorizer...")
+    tfidf: TfidfVectorizer = TfidfVectorizer(
+        strip_accents="unicode", lowercase=True, ngram_range=(1, 2), analyzer="word"
+    )
+    tfidf.fit(raw_documents=documents)
+    print("Created TfidfVectorizer ✅")
+    dump(value=tfidf, filename="../models/TfidfVectorizer.joblib")
+    return tfidf
+
+
+def loadTFIDF() -> TfidfVectorizer:
+    return load(filename="../models/TfidfVectorizer.joblib")
+
+
+def transformDataCV(cv: CountVectorizer, documents: Series) -> ndarray:
     print("Tranforming data...")
     data: ndarray = cv.transform(raw_documents=documents)
     print("Tranformed data ✅")
     return data
 
 
-def trainModel(x: ndarray, y: Series) -> MultinomialNB:
+def transformDataTFIDF(tfidf: TfidfVectorizer, documents: Series) -> spmatrix:
+    print("Tranforming data...")
+    data: spmatrix = tfidf.transform(raw_documents=documents)
+    print("Tranformed data ✅")
+    return data
+
+
+def trainModelCV(x: Series, y: Series) -> MultinomialNB:
+    cv: CountVectorizer = createCV(documents=x)
+    # cv: CountVectorizer = loadCV()
+
+    x: ndarray = transformDataCV(cv=cv, documents=x)
+
     print("Training Multinomial Naive Bayes Model...")
     mnnb: MultinomialNB = MultinomialNB(force_alpha=True)
     mnnb.fit(X=x, y=y)
     print("Trained Multinomial Naive Bayes Model ✅")
-    dump(value=mnnb, filename="../models/mnnb.joblib")
+    dump(value=mnnb, filename="../models/mnnbCV.joblib")
     return mnnb
 
 
-def loadModel() -> MultinomialNB:
-    return load(filename="../models/mnnb.joblib")
+def loadModelCV() -> MultinomialNB:
+    return load(filename="../models/mnnbCV.joblib")
+
+
+def trainModelTFIDF(x: Series, y: Series) -> MultinomialNB:
+    tfidf: TfidfVectorizer = createTFIDF(documents=x)
+    # tfidf: TfidfVectorizer = loadTFIDF()
+
+    x: spmatrix = transformDataTFIDF(tfidf=tfidf, documents=x)
+
+    print("Training Multinomial Naive Bayes Model...")
+    mnnb: MultinomialNB = MultinomialNB(force_alpha=True)
+    mnnb.fit(X=x, y=y)
+    print("Trained Multinomial Naive Bayes Model ✅")
+    dump(value=mnnb, filename="../models/mnnbTFIDF.joblib")
+    return mnnb
+
+
+def loadModelTFIDF() -> MultinomialNB:
+    return load(filename="../models/mnnbTFIDF.joblib")
 
 
 def evaluateModel(x: ndarray, y: Series, mnnb: MultinomialNB) -> None:
@@ -69,16 +114,8 @@ def main() -> None:
         shuffle=True,
     )
 
-    cv: CountVectorizer = createCV(documents=xTrain)
-    # cv: CountVectorizer = loadCV()
-
-    xTrain: ndarray = transformData(cv=cv, documents=xTrain)
-    xTest: ndarray = transformData(cv=cv, documents=xTest)
-
-    mnnb: MultinomialNB = trainModel(x=xTrain, y=yTrain)
-    # mnnb: MultinomialNB = loadModel()
-
-    evaluateModel(x=xTest, y=yTest, mnnb=mnnb)
+    mnnbCV: MultinomialNB = trainModelCV(x=xTrain, y=yTrain)
+    mnnbTFIDF: MultinomialNB = trainModelTFIDF(x=xTrain, y=yTrain)
 
 
 if __name__ == "__main__":
