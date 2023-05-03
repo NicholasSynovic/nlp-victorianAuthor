@@ -1,6 +1,7 @@
 gensim
 matplotlib
 netron
+openpyxl
 pandas
 scikit-learn
 tensorflow
