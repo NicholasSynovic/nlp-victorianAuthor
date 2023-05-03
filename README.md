@@ -4,10 +4,11 @@
 
 ## Table of Contents
 
-- [Victorian Era Classifcation](#victorian-era-classifcation)
+- [Victorian Era Classification](#victorian-era-classification)
   - [Table of Contents](#table-of-contents)
   - [Authors](#authors)
   - [About](#about)
+  - [Final Report and Presentation](#final-report-and-presentation)
     - [Dataset](#dataset)
     - [Pre-Trained Models](#pre-trained-models)
   - [How to Run](#how-to-run)
@@ -41,6 +42,16 @@ University Chicago (LUC) COMP 329-429 Natural Language Processing (NLP) Final.
 
 Our project, in short, is to develop and evaluate neural networks for texts
 written by authors of the Victorian Era.
+
+## Final Report and Presentation
+
+Both our final report and presentation are stored within this repo. They can be
+found inside the `report/` directory.
+
+- Final Report:
+  [`report/COMP329-429_Montenegro_Synovic_Nelson_Final Paper.pdf`](report/COMP329-429_Montenegro_Synovic_Nelson_Final%20Paper.pdf)
+- Final Presentation:
+  [`report/COMP329-429_Montenegro_Synovic_Nelson_Final Paper.pdf`](report/COMP329-429_Montenegro_Synovic_Nelson_Final%20Presentation.pdf)
 
 ### Dataset
 
