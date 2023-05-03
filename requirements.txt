@@ -1,4 +1,6 @@
 gensim
-numpy
+matplotlib
+netron
 pandas
 scikit-learn
+tensorflow
