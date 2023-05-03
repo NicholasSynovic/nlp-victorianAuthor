@@ -9,6 +9,7 @@
   - [Authors](#authors)
   - [About](#about)
     - [Dataset](#dataset)
+    - [Pre-Trained Models](#pre-trained-models)
   - [How to Run](#how-to-run)
     - [Setup](#setup)
     - [Baseline](#baseline)
@@ -50,6 +51,11 @@ We have modified this dataset for our purposes. We discuss our modifications
 within our final paper. To download our modified dataset, please download it
 from HuggingFace
 [here](https://huggingface.co/datasets/NicholasSynovic/Modified-VEAA).
+
+### Pre-Trained Models
+
+Pre-trained models are availble on thie
+[HuggingFace repo](https://huggingface.co/NicholasSynovic/VEAA-Models).
 
 ## How to Run
 
