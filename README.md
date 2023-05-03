@@ -1,4 +1,4 @@
-# Victorian Era Classifcation
+# Victorian Era Classification
 
 > LUC COMP 329-429 Final
 
