@@ -69,14 +69,14 @@ def main() -> None:
         shuffle=True,
     )
 
-    # tfidf: TfidfVectorizer = createTFIDF(documents=xTrain)
-    tfidf: TfidfVectorizer = loadTFIDF()
+    tfidf: TfidfVectorizer = createTFIDF(documents=xTrain)
+    # tfidf: TfidfVectorizer = loadTFIDF()
 
     xTrain: spmatrix = transformData(tfidf=tfidf, documents=xTrain)
     xTest: spmatrix = transformData(tfidf=tfidf, documents=xTest)
 
-    # mnnb: MultinomialNB = trainModel(x=xTrain, y=yTrain)
-    mnnb: MultinomialNB = loadModel()
+    mnnb: MultinomialNB = trainModel(x=xTrain, y=yTrain)
+    # mnnb: MultinomialNB = loadModel()
     evaluateModel(x=xTest, y=yTest, mnnb=mnnb)
 
 
