@@ -23,8 +23,8 @@ def createTFIDF(documents: Series) -> TfidfVectorizer:
         strip_accents="unicode", lowercase=True, ngram_range=(1, 2), analyzer="word"
     )
     tfidf.fit(raw_documents=documents)
-    print("Created TfidfVectorizer ✅")
     dump(value=tfidf, filename="../../models/TfidfVectorizer.joblib")
+    print("Created TfidfVectorizer ✅")
     return tfidf
 
 
@@ -43,8 +43,8 @@ def trainModel(x: spmatrix, y: Series) -> MultinomialNB:
     print("Training Multinomial Naive Bayes Model...")
     mnnb: MultinomialNB = MultinomialNB(force_alpha=True)
     mnnb.fit(X=x, y=y)
-    print("Trained Multinomial Naive Bayes Model ✅")
     dump(value=mnnb, filename="../../models/MultinomialNB_TFIDF.joblib")
+    print("Trained Multinomial Naive Bayes Model ✅")
     return mnnb
 
 

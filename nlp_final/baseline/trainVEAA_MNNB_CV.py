@@ -22,8 +22,8 @@ def createCV(documents: Series) -> CountVectorizer:
         strip_accents="unicode", lowercase=True, ngram_range=(1, 2), analyzer="word"
     )
     cv.fit(raw_documents=documents)
-    print("Created CountVectorizer ✅")
     dump(value=cv, filename="../../models/CountVectorizer.joblib")
+    print("Created CountVectorizer ✅")
     return cv
 
 
@@ -42,8 +42,8 @@ def trainModel(x: Series, y: Series) -> MultinomialNB:
     print("Training Multinomial Naive Bayes Model...")
     mnnb: MultinomialNB = MultinomialNB(force_alpha=True)
     mnnb.fit(X=x, y=y)
-    print("Trained Multinomial Naive Bayes Model ✅")
     dump(value=mnnb, filename="../../models/MultinomialNB_CV.joblib")
+    print("Trained Multinomial Naive Bayes Model ✅")
     return mnnb
 
 

@@ -984,6 +984,17 @@ gmpy = ["gmpy2 (>=2.1.0a4)"]
 tests = ["pytest (>=4.6)"]
 
 [[package]]
+name = "netron"
+version = "6.8.6"
+description = "Viewer for neural network, deep learning, and machine learning models"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "netron-6.8.6-py3-none-any.whl", hash = "sha256:e4aec0130133997e8f776181c74add05198d08a6bfdb8ec86225f273be9b7aef"},
+]
+
+[[package]]
 name = "networkx"
 version = "3.1"
 description = "Python package for creating and manipulating graphs and networks"
@@ -2378,4 +2389,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "1e1c01911e7de4615f98a695a2643d945d43c8daff40de70e692b38086c121bd"
+content-hash = "2765958f9e96986d082b4176ab8d763ceffbc4d30902424ad5eadb8034b59ff2"
